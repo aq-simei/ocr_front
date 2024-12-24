@@ -36,6 +36,7 @@ This is the frontend application for the OCR (Optical Character Recognition) pro
 
 1. Clone the repository:
    ```sh
-   git clone <repository-url>
+   git@github.com/aq-simei/ocr_front.git
    cd ocr_front
-  2.1 create a .env file containing API_URL key (api url, defaults to http://localhost:3000)2. Set .env file
+  2.1 create a .env file containing API_URL key (api url, defaults to http://localhost:3000)
+  Set .env file (same as port on backend)

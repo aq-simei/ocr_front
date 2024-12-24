@@ -17,7 +17,7 @@ export default function Home() {
           variant="outline"
           className="font-bold text-md"
           size="lg"
-          onClick={() => route.push("/upload")}
+          onClick={() => route.push("/documents")}
         >
           View Documents
         </Button>
