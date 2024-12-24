@@ -30,13 +30,17 @@ This is the frontend application for the OCR (Optical Character Recognition) pro
 - npm or yarn
 - setup of OcrBackend, up and running locally
 
-##   ```sh
-   git clone <repository-url>
-   cd ocr_front# Installation
-
+## Setup
 1. Clone the repository:
-   ```sh
+```bash
    git@github.com/aq-simei/ocr_front.git
    cd ocr_front
+   yarn install
+```
   2.1 create a .env file containing API_URL key (api url, defaults to http://localhost:3000)
   Set .env file (same as port on backend)
+
+## Run
+```bash
+   yarn dev
+```
