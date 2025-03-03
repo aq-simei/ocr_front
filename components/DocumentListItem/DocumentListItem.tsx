@@ -13,10 +13,10 @@ export const DocumentListItem = ({ doc }: DocListItemProps) => {
   const deleteDocument = async () => {
     await api.delete(`files/delete/${doc.name}`);
   };
-  const {mutateAsync: deleteDoc} = useMutation({
+  const { mutateAsync: deleteDoc } = useMutation({
     mutationFn: deleteDocument,
     onSuccess: () => {
-      queryClient.invalidateQueries(["documents"]);
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
     },
   });
   return (
@@ -24,10 +24,7 @@ export const DocumentListItem = ({ doc }: DocListItemProps) => {
       <CardHeader>
         <CardTitle className="w-full items-center flex justify-between">
           {doc.name}
-          <button
-            className="ml-auto text-red-500"
-            onClick={() => deleteDoc()}
-          >
+          <button className="ml-auto text-red-500" onClick={() => deleteDoc()}>
             <Trash />
           </button>
         </CardTitle>
