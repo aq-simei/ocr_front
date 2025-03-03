@@ -24,7 +24,7 @@ export const NavigationBar = () => {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground rounded-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -35,9 +35,9 @@ export const NavigationBar = () => {
                   href={item.path}
                   className={`${
                     pathname == item.path
-                      ? "border-indigo-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                      ? "border-indigo-500 text-primary-foreground"
+                      : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-primary-foreground font-semibold"
+                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-bold motion-duration-2000 motion-opacity-in-0`}
                 >
                   {item.name}
                 </Link>
@@ -47,7 +47,7 @@ export const NavigationBar = () => {
           <div className="sm:ml-6 sm:flex sm:items-center">
             <Button
               className={twMerge(
-                "bg-indigo-600 text-white font-bold px-4 py-2 rounded-md text-sm focus:outline",
+                "bg-indigo-600  font-bold px-4 py-2 rounded-md text-sm focus:outline",
                 "hover:text-primary hover:bg-white hover:shadow-2xl hover:border-2",
                 "transition-colors duration-500 ease-in-out"
               )}

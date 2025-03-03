@@ -27,8 +27,8 @@ export default function RootLayout({
     <html lang="en" className={nunito.className}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <body>
-            <div className="min-h-screen bg-gray-50">
+          <body className="dark text-foreground bg-primary dark:text-foreground">
+            <div className="min-h-screen">
               <NavigationBar />
               <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 {children}

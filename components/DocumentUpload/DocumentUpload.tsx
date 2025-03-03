@@ -118,9 +118,9 @@ export const DocumentUpload = () => {
           )}
           <Button
             type="button"
-            variant={"outline"}
+            variant={"default"}
             onClick={handleButtonClick}
-            className="inline-flex justify-center py-2 px-4 shadow-md -sm font-semibold rounded-md text-onAccent bg-accent hover:bg-indigo-500 hover:text-secondary focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors ease-in-out duration-500"
+            className="inline-flex justify-center py-2 px-4 shadow-md -sm font-semibold rounded-md text-onAccent bg-accent hover:bg-indigo-500 hover:text-secondary focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors ease-in-out duration-500 "
           >
             {file ? "Change File" : "Choose File"}
           </Button>

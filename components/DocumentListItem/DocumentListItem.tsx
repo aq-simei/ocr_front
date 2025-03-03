@@ -30,9 +30,9 @@ export const DocumentListItem = ({ doc }: DocListItemProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-500">Created in: {uploadDate}</p>
+        <p>Created in: {uploadDate}</p>
         <Link
-          href={`/documents/${doc.name}`}
+          href={`/document/${doc.name}`}
           className="flex items-center flex-row mt-2"
         >
           <LinkIcon />

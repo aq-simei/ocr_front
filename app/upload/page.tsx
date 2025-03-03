@@ -16,10 +16,10 @@ export default function Upload() {
   return (
     <div className="space-y-6 text-center w-full">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">
+        <h1 className="text-4xl font-bold text-primary-foreground mb-4">
           Upload New Document
         </h1>
-        <p className="mt-2 text-sm text-gray-700">
+        <p className="mt-2 text-xl text-muted-foreground font-semibold">
           Upload a document for OCR processing and analysis.
         </p>
       </div>
