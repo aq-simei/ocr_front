@@ -8,9 +8,15 @@ import { useAuth } from "@/providers/Auth/AuthProvider";
 export default function Documents() {
   const { documents, isLoading } = useFetchDocs();
   const { isAuthenticated } = useAuth();
+
   if (!isAuthenticated) {
-    return <LoginRequiredContent />;
+    return (
+      <LoginRequiredContent
+        title={"Ooops, you need to be logged in to upload a document."}
+      />
+    );
   }
+
   if (!isLoading) {
     return (
       <div>

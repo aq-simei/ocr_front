@@ -8,10 +8,12 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 type AuthContextType = {
   isAuthenticated: boolean;
-  login: (input: UserSignInInput) => Promise<void>;
+  login: (input: UserSignInInput) => void;
   logout: () => void;
   pendingLogin: boolean;
 };
@@ -20,19 +22,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const router = useRouter();
+  const loginMutation = useMutation({
+    mutationKey: ["login"],
+    mutationFn: signIn,
+    onSuccess: (jwt) => {
+      localStorage.setItem("jwtToken", jwt.access_token);
+      api.interceptors.request.use((config) => {
+        config.headers.Authorization = `Bearer ${jwt.access_token}`;
+        return config;
+      });
+      setIsAuthenticated(true);
+      toast.success("Login successful", { position: "top-center" });
+    },
+    onError: (error) => {
+      toast.error("Login failed", { position: "top-center" });
+      console.log(error);
+    },
+  });
 
-  const [isPending, updateIsPending] = useState<boolean>(false);
-
-  const login = async (input: UserSignInInput) => {
-    const jwt = await signIn(input);
-    localStorage.setItem("jwtToken", jwt.access_token);
-    api.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${jwt}`;
-      return config;
-    });
-    updateIsPending(false);
-    setIsAuthenticated(true);
-    toast.success("Login successful", { position: "top-center" });
+  const login = (input: UserSignInInput) => {
+    loginMutation.mutate(input);
   };
 
   const logout = () => {
@@ -48,9 +58,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      api.interceptors.request.use((config) => {
+        delete config.headers.Authorization;
+        return config;
+      });
+    }
+    router.push("/auth/login");
+  }, [isAuthenticated]);
+
   return (
     <AuthContext.Provider
-      value={{ login, isAuthenticated, logout, pendingLogin: isPending }}
+      value={{
+        login,
+        isAuthenticated,
+        logout,
+        pendingLogin: loginMutation.isPending,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -28,7 +28,9 @@ export default function DocumentDetails() {
         return res.data;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries(["document", params.name[0]]);
+        queryClient.invalidateQueries({
+          queryKey: ["document", params.name[0]],
+        });
       },
     });
 
@@ -45,7 +47,7 @@ export default function DocumentDetails() {
     queryFn: getOcrResult,
   });
 
-  if (isSuccess) {
+  if (isSuccess && document) {
     const formattedDate = new Date(document.createdAt).toLocaleString();
     return (
       <div>
