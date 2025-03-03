@@ -11,7 +11,6 @@ export const LoginRequiredContent = ({ title }: LoginRequiredContentProps) => {
       <div>
         <h1 className="text-xl font-semibold text-gray-900">
           {title || "Login Required"}
-
         </h1>
         <div className="w-full justify-between">
           <p className="text-sm text-center text-gray-600">

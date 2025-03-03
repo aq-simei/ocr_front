@@ -8,11 +8,11 @@ export const userSignUpFormSchema = z
       .min(4, "At least 4 characters")
       .nonempty("Password is required"),
     email: z.string().email("Invalid email").nonempty("Email is required"),
-    confirmPassword: z.string().nonempty("Passwod confirmation is required"),
+    confirmPassword: z.string().nonempty("Password confirmation is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirm_password"],
+    path: ["confirmPassword"],
   });
 
 export type UserSignUpFormData = z.infer<typeof userSignUpFormSchema>;

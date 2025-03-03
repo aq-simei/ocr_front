@@ -39,11 +39,11 @@ export default function SignUp() {
       name,
       email,
       password,
-    }
+    };
     const res = await createUser(formData);
     if (res) {
       toast.success("Account created successfully!");
-      login({ email, password })
+      login({ email, password });
       router.push("/");
     }
   };
@@ -79,6 +79,19 @@ export default function SignUp() {
               )}
             </div>
             <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                required
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
@@ -93,19 +106,7 @@ export default function SignUp() {
                 </p>
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                required
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password Confirmation</Label>
               <Input
