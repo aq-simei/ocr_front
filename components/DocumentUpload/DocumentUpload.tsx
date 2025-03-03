@@ -1,11 +1,13 @@
 "use client";
 import { useRef, useState } from "react";
-import { Trash, X } from "lucide-react";
+import { Check, Trash, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import api from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
+import { twMerge } from "tailwind-merge";
+import { Close } from "@radix-ui/react-dialog";
 
 export const DocumentUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -24,9 +26,7 @@ export const DocumentUpload = () => {
     return res.data;
   };
 
-  const {
-    mutateAsync: uploadFile,
-  } = useMutation({
+  const { mutateAsync: uploadFile } = useMutation({
     mutationKey: ["uploadFile"],
     mutationFn: upload,
     onSuccess: () => {
@@ -78,41 +78,80 @@ export const DocumentUpload = () => {
     clearRefInput();
   };
 
+  const handleButtonClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-      <div className="flex flex-row items-center">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 space-x-4 max-w-xl mx-auto"
+    >
+      <div className="flex flex-col items-center justify-between">
         <label
           htmlFor="document"
-          className="block text-sm font-medium  text-primary dark:text-primaryDark"
+          className="text-md font-semibold  text-primary dark:text-primaryDark"
         >
-          Upload Document
+          Start by uploading a new document
         </label>
-        {file && (
-          <span
-            className="text-red-400 font-bold p-1 hover:cursor-pointer ml-3 flex flex-row items-center"
-            onClick={clearRefInput}
-            aria-label="Remove file"
-          >
-            <Trash className="mr-2" strokeWidth={4} size={16} />
-            Clear file
-          </span>
-        )}
       </div>
-      <Input
-        type="file"
-        id="document"
-        ref={inputRef}
-        accept="image/*"
-        onChange={handleFileChange}
-        className=" block w-full border-none rounded-md shadow-none px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 file:hover:border-indigo-500 sm:text-sm"
-      />
-      <Button
-        type="submit"
-        disabled={!file || uploading}
-        className="inline-flex justify-center py-2 px-4 shadow-md -sm font-semibold rounded-md text-onAccent bg-accent hover:bg-indigo-500 hover:text-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50 transition-colors ease-in-out duration-500 "
-      >
-        {uploading ? "Uploading..." : "Upload"}
-      </Button>
+
+      <div className="flex flex-col items-center space-y-2">
+        <Input
+          type="file"
+          id="document"
+          ref={inputRef}
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <div className="flex flex-row items-center justify-center space-x-2 w-full">
+          {file && (
+            <p className="text-gray-900 dark:text-gray-100 font-semibold">
+              {file.name}{" "}
+              <span className="text-gray-500 text-sm">
+                ({(file.size / 1024).toFixed(2)} KB)
+              </span>
+            </p>
+          )}
+          <Button
+            type="button"
+            variant={"outline"}
+            onClick={handleButtonClick}
+            className="inline-flex justify-center py-2 px-4 shadow-md -sm font-semibold rounded-md text-onAccent bg-accent hover:bg-indigo-500 hover:text-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors ease-in-out duration-500"
+          >
+            {file ? "Change File" : "Choose File"}
+          </Button>
+
+          {file && (
+            <Button
+              variant={"link"}
+              onClick={clearRefInput}
+              aria-label="Remove file"
+              className="hover:font-bold"
+            >
+              <X strokeWidth={3} size={16} />
+              Drop selection
+            </Button>
+          )}
+        </div>
+        <Button
+          type="submit"
+          disabled={!file || uploading}
+          className="inline-flex justify-center py-2 px-4 shadow-md -sm font-semibold rounded-md text-onAccent bg-accent hover:bg-indigo-500 hover:text-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50 transition-colors ease-in-out duration-500 "
+        >
+          {uploading ? (
+            "Uploading..."
+          ) : (
+            <>
+              <Check strokeWidth={3}/>
+              <span>Upload</span>
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
