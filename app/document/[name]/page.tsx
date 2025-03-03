@@ -54,7 +54,7 @@ export default function DocumentDetails() {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           Document Details
         </h1>
-        <div className="bg-white shadow sm:rounded-lg w-full">
+        <div className="bg-white shadow-sm sm:rounded-lg w-full">
           <div className="px-4 py-5 sm:px-6 flex-col flex">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               Document Information
@@ -115,7 +115,7 @@ export default function DocumentDetails() {
           </div>
         </div>
         <div className="mt-4">
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             Download Document
           </button>
         </div>

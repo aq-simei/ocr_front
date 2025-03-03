@@ -94,7 +94,7 @@ export function Chat({ ocrId }: ChatProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question..."
-            className="flex-grow"
+            className="grow"
             disabled={isLoading}
           />
           <Button type="submit" disabled={isLoading}>
