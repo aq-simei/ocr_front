@@ -15,11 +15,11 @@ import {
 import { useAuth } from "@/providers/Auth/AuthProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@radix-ui/react-label";
-import { LogIn } from "lucide-react";
+import { CheckCircle, CheckCircle2Icon, Circle, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { showErrorToast, showInfoToast } from "@/components/CustomToast";
 
 export default function Login() {
   const { login, isAuthenticated, pendingLogin } = useAuth();
@@ -31,22 +31,16 @@ export default function Login() {
   } = useForm<UserLoginFormData>({
     resolver: zodResolver(userLoginSchema),
   });
+  const [keepSignIn, setKeepSignIn] = useState(false);
 
   const onSuccess: SubmitHandler<UserLoginFormData> = async (data) => {
+    showInfoToast("Logging in...");
     await login(data);
-    toast.message("Login successful");
-    router.push("/");
   };
 
   const onError = () => {
-    console.log("error");
+    showErrorToast("Form fields are invalid");
   };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
-    }
-  }, [isAuthenticated, router]);
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -92,7 +86,7 @@ export default function Login() {
             {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-accent text-primary font-semibold hover:text-primary-foreground hover:border-2"
               onClick={handleSubmit(onSuccess, onError)}
               disabled={pendingLogin}
             >
@@ -103,16 +97,27 @@ export default function Login() {
         </CardContent>
         <CardFooter>
           <div className="w-full justify-between">
-            <p className="text-sm text-center text-gray-600">
+            <p className="text-sm text-center text-muted-foreground">
               Don't have an account?
               <Button
                 variant="link"
-                className="text-primary"
+                className="text-primary-foreground"
                 onClick={() => router.push("/auth/signup")}
               >
                 Sign up now!
               </Button>
             </p>
+            <Button
+              className="flex justify-center mx-2 items-center motion-ease-spring-bouncier"
+              onClick={() => setKeepSignIn((prev) => !prev)}
+            >
+              {keepSignIn ? (
+                <CheckCircle className="motion-preset-pop" />
+              ) : (
+                <Circle className="motion-preset-pop" />
+              )}
+              <label>Remember me</label>
+            </Button>
           </div>
         </CardFooter>
       </Card>
