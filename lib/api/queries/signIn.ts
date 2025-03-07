@@ -1,4 +1,5 @@
 import api from "@/lib/api";
+import { showErrorToast } from "@/components/CustomToast";
 
 export type UserSignInInput = {
   email: string;
@@ -11,11 +12,24 @@ export type User = {
   email: string;
   createdAt: Date;
 };
-type jwtToken = {
-  access_token: string;
-  expirationData: string;
-}
-export const signIn = async (input: UserSignInInput): Promise<jwtToken> => {
-  const res = await api.post("auth/login", input);
-  return res.data;
+
+export type LoginResponseData = {
+  token: string;
+  sessionToken: string;
+};
+
+export const signIn = async (input: UserSignInInput): Promise<LoginResponseData> => {
+  try {
+    const res = await api.post("auth/login", input);
+    return res.data;
+  } catch (error: any) {
+    if (error.response.status === 401) {
+      console.log("Full error response:", error.response);
+      showErrorToast("Invalid email or password");
+    } else {
+      console.log("Full error response:", error.response);
+      showErrorToast("An error occurred. Please try again later.");
+    }
+    return Promise.reject(error);
+  }
 };
