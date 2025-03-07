@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Document } from "@/lib/types/Document";
 import api from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "../ui/button";
+import { showSuccessToast } from "../CustomToast";
 type DocListItemProps = {
   doc: Document;
 };
@@ -17,6 +19,7 @@ export const DocumentListItem = ({ doc }: DocListItemProps) => {
     mutationFn: deleteDocument,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["documents"] });
+      showSuccessToast("Document deleted successfully");
     },
   });
   return (
@@ -24,9 +27,13 @@ export const DocumentListItem = ({ doc }: DocListItemProps) => {
       <CardHeader>
         <CardTitle className="w-full items-center flex justify-between">
           {doc.name}
-          <button className="ml-auto text-red-500" onClick={() => deleteDoc()}>
-            <Trash />
-          </button>
+          <Button
+            className="ml-auto text-red-500 rounded-full border-2 border-red-500 hover:bg-red-500 hover:text-white  w-px transition-all duration-500"
+            variant="default"
+            onClick={() => deleteDoc()}
+          >
+            <Trash size={16} strokeWidth={3} />
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>

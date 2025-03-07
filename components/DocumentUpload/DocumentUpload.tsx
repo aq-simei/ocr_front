@@ -3,11 +3,11 @@ import { useRef, useState } from "react";
 import { Check, Trash, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { toast } from "sonner";
 import api from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
 import { Close } from "@radix-ui/react-dialog";
+import { showErrorToast, showSuccessToast, showInfoToast } from "@/components/CustomToast";
 
 export const DocumentUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -15,7 +15,7 @@ export const DocumentUpload = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const upload = async (file: File) => {
-    toast.message("Uploading file");
+    showInfoToast("Uploading file");
     const formData = new FormData();
     formData.append("file", file);
     const res = await api.post("/files/upload", formData, {
@@ -30,11 +30,11 @@ export const DocumentUpload = () => {
     mutationKey: ["uploadFile"],
     mutationFn: upload,
     onSuccess: () => {
-      toast.success("File uploaded successfully", { position: "top-center" });
+      showSuccessToast("File uploaded successfully", { position: "top-center" });
       clearRefInput();
     },
     onError: () => {
-      toast.error("Error uploading file, try again w/ another file", {
+      showErrorToast("Error uploading file, try again w/ another file", {
         position: "top-center",
       });
     },
@@ -46,14 +46,14 @@ export const DocumentUpload = () => {
         e.target.files[0].type !== "image/jpeg" &&
         e.target.files[0].type !== "image/png"
       ) {
-        toast.error("Invalid file type. Please upload a jpeg or png file.", {
+        showErrorToast("Invalid file type. Please upload a jpeg or png file.", {
           position: "top-center",
         });
         clearRefInput();
         return;
       }
       setFile(e.target.files[0]);
-      toast.success("File picked successfully");
+      showSuccessToast("File picked successfully");
     } else {
       setFile(null);
     }
@@ -69,7 +69,7 @@ export const DocumentUpload = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      toast.error("File not selected");
+      showErrorToast("File not selected");
       return;
     }
     console.log("Uploading file:");

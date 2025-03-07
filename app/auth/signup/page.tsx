@@ -124,7 +124,7 @@ export default function SignUp() {
             </div>
             {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
             <Button
-              className="w-full font-bold items-center rounded-2xl"
+              className="w-full bg-accent text-primary font-semibold hover:text-primary-foreground hover:border-2"
               onClick={handleSubmit(handleSubmitForm, onError)}
             >
               <SquareArrowUp strokeWidth={3} />
@@ -134,11 +134,11 @@ export default function SignUp() {
         </CardContent>
         <CardFooter>
           <div className="w-full justify-between">
-            <p className="text-sm text-center text-gray-600">
+            <p className="text-sm text-center text-muted-foreground">
               Already have an account?
               <Button
                 variant="link"
-                className="text-primary"
+                className="text-primary-foreground"
                 onClick={() => router.push("/auth/login")}
               >
                 Login now!
