@@ -1,72 +1,96 @@
 import api from "@/lib/api";
-import { signIn, UserSignInInput } from "@/lib/api/queries/signIn";
+import {
+  LoginResponseData,
+  signIn,
+  UserSignInInput,
+} from "@/lib/api/queries/signIn";
 import React, {
   createContext,
   useContext,
   useState,
   ReactNode,
   useEffect,
+  useRef,
 } from "react";
-import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { showErrorToast, showSuccessToast } from "@/components/CustomToast";
+import { useSessionTokenLogin } from "@/hooks/useSessionTokenLogin";
+import { set } from "zod";
 
 type AuthContextType = {
   isAuthenticated: boolean;
-  login: (input: UserSignInInput) => void;
+  login: (input: UserSignInInput) => Promise<LoginResponseData | undefined>;
   logout: () => void;
   pendingLogin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const setAuthToken = (token: string | null) => {
+  if (token) {
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common["Authorization"];
+  }
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const { sessionTokenSignIn } = useSessionTokenLogin();
+  const checkedRefetchLogin = useRef(false);
   const router = useRouter();
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: signIn,
-    onSuccess: (jwt) => {
-      localStorage.setItem("jwtToken", jwt.access_token);
-      api.interceptors.request.use((config) => {
-        config.headers.Authorization = `Bearer ${jwt.access_token}`;
-        return config;
-      });
+    onSuccess: (data) => {
+      localStorage.removeItem("sessionToken");
+      console.log(data.sessionToken);
+      localStorage.setItem("sessionToken", data.sessionToken);
+      setAuthToken(data.token);
       setIsAuthenticated(true);
-      toast.success("Login successful", { position: "top-center" });
+      showSuccessToast("Login successful");
+      router.push("/");
     },
-    onError: (error) => {
-      toast.error("Login failed", { position: "top-center" });
-      console.log(error);
+    onError: () => {
+      console.log("Error logging in");
     },
   });
 
-  const login = (input: UserSignInInput) => {
-    loginMutation.mutate(input);
+  const login = async (input: UserSignInInput) => {
+    try {
+      const res = await loginMutation.mutateAsync(input);
+      return res;
+    } catch (error) {
+      console.log("Error logging in ", error);
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem("jwtToken");
-    toast.warning("You have been logged out", { position: "top-center" });
+    localStorage.removeItem("sessionToken");
+    setAuthToken(null);
+    showErrorToast("You have been logged out");
     setIsAuthenticated(false);
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
+    if (checkedRefetchLogin.current) {
+      return;
+    }
+    const token = localStorage.getItem("sessionToken");
     if (token) {
-      setIsAuthenticated(true);
+      try {
+        sessionTokenSignIn({ sessionToken: token }).then((data) => {
+          setAuthToken(data?.sessionTokens.jwtToken);
+        });
+        checkedRefetchLogin.current = true;
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.log("Error logging in ", error);
+        showErrorToast("Error on auto login");
+      }
     }
   }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      api.interceptors.request.use((config) => {
-        delete config.headers.Authorization;
-        return config;
-      });
-    }
-    router.push("/auth/login");
-  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider
