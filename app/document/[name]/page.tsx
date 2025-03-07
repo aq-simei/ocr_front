@@ -13,7 +13,7 @@ export default function DocumentDetails() {
   const params = useParams();
   const queryClient = useQueryClient();
 
-  const { isSuccess, document } = useFetchDoc(params.name[0]);
+  const { isSuccess, document } = useFetchDoc(params.name as string);
 
   const handleRequestExtractText = async () => {
     toast.message("Requesting text extraction");
@@ -29,7 +29,7 @@ export default function DocumentDetails() {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["document", params.name[0]],
+          queryKey: ["document", params.name],
         });
       },
     });
@@ -45,6 +45,7 @@ export default function DocumentDetails() {
   const { data: ocrResult, isSuccess: successForOcr } = useQuery({
     queryKey: ["ocrResult", params.name],
     queryFn: getOcrResult,
+    enabled: document?.ocrResultId != null,
   });
 
   if (isSuccess && document) {
